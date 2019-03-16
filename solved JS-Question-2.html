@@ -1,0 +1,256 @@
+<!doctype html>
+<html>
+
+<head>
+	<style>
+		h1 {
+			text-align: center;
+		}
+
+		.person {
+			padding: 20px;
+			background-color: #EEE;
+		}
+
+		.person span {
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		.person ul {
+			margin: 0;
+		}
+
+		.tab {
+			padding: 0;
+			margin: 0;
+			cursor: pointer;
+		}
+
+		.tab.even h3 {
+			background-color: #EED4FF;
+		}
+
+		.tab h3 {
+			padding: 10px;
+			margin: 0;
+			background-color: #EE9AFF;
+		}
+
+		.tab h3:hover {
+			background-color: #CCBFF6;
+		}
+
+		.tab.opened h3 {
+			background-color: #CCBFF6;
+		}
+
+		.tab.closed div {
+			display: none;
+		}
+	</style>
+	<script src="http://code.jquery.com/jquery-1.12.4.min.js"
+		integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+	<script>
+		/* You may use jQuery or pure JavaScript to solve the following problem.
+		*
+		* 1. create a valid JSON structure that will represent the following
+		* object structure:
+		*
+		* An object called people is a collection of person objects.  Each person object
+		* has the following attributes: name, age, occupation, and hobbies,
+		* where hobbies is collection of activity values. (Please use the data
+		* from step 2 for the values of your JSON fields)
+		*
+		* 2. after you have created the JSON structure, you will need to create
+		* the necessary JavaScript code to traverse your JSON object and create the
+		* following HTML structure:
+		*
+		* NOTE: this structure must be data driven, meaning that the field names such
+		* as name, age, etc. cannot be hardcoded.  Also, the number of tabs cannot be
+		* hardcoded, it must be driven by the number of people present in the JSON.
+		*
+			<h1>People</h1>
+			<div class="tab closed">
+				<h3>Edward's Info</h3>
+				<div class="person">
+					<span>name: Edward</span>
+					<span>age: 76</span>
+					<span>occupation: UI Developer</span>
+					<span>hobbies:</span>
+					<ul>
+						<li>Bowling</li>
+						<li>Tennis</li>
+					</ul>
+				</div>
+			</div>
+			<div class="tab even closed">
+				<h3>Jorge's Info</h3>
+				<div class="person even">
+					<span>name: Jorge</span>
+					<span>age: 25</span>
+					<span>occupation: Designer</span>
+					<span>hobbies:</span>
+					<ul>
+						<li>Soccer</li>
+						<li>Food Tasting</li>
+					</ul>
+				</div>
+			</div>
+			<div class="tab closed">
+				<h3>Naveen's Info</h3>
+				<div class="person">
+					<span>name: Naveen</span>
+					<span>age: 23</span>
+					<span>occupation: Programmer</span>
+					<span>hobbies:</span>
+					<ul>
+						<li>Video Games</li>
+					</ul>
+				</div>
+			</div>
+		*
+		* 3. Once your code has created the HTML structure and appended it to the body,
+		* add a click event listener to the h3 tag that will do the following:
+		*
+		* When the user clicks on it, the parent div will toggle between the 'closed' and
+		* 'opened' class.  Thus, the person's info will be either displayed or hidden
+		* depending on the active class.
+		**/
+
+		$(document).ready(function () {
+
+			//JSON OBJECT
+			var peopleJSON =
+				[
+					{
+						"name": "Edward",
+						"age": 76,
+						"occupation": "UI Developer",
+						"hobbies": [
+							"Bowling",
+							"Tennis"
+						]
+					}
+					,
+					{
+						"name": "Jorge",
+						"age": 25,
+						"occupation": "Designer",
+						"hobbies": [
+							"Soccer",
+							"Food Tasting"
+						]
+					},
+					{
+						"name": "Naveen",
+						"age": 23,
+						"occupation": "Programmer",
+						"hobbies": [
+							"Video Games"
+						]
+					}
+				]
+
+			var $resultsID = $("#results");
+
+
+
+			//Function calls here
+			writeToHTML();
+			collapse();
+
+
+
+			//Function declarations below
+
+			//Function that transverses through JSON data and writes to DOM.
+			//************************************************************************************			
+			function writeToHTML() {
+
+				// //Go through each person in JSON
+				// for (var i = 0; i < peopleJSON.length; i++) {
+				// 	$resultsID.append(`<div class="tab">
+				// 						<h3>${peopleJSON[i].name}'s Info</h3>
+				// 						<div class="person">`)
+
+
+				// 	//Go through each key in JSON
+				// 	for (var key in peopleJSON[i]) {
+				// 		if (key === 'hobbies') {
+				// 			$(".person").append(`<span>${key}: </span>`)
+				// 			$(".person").append(`<ul>`)
+
+				// 			for (var hobbyKey in peopleJSON[i][key]) {
+				// 				$(".person").append(`<li>${peopleJSON[i][key][hobbyKey]}</li>`)
+				// 			}
+				// 			$(".person").append(`</ul>`)
+
+
+				// 		}
+				// 		else {
+				// 			$(".person").append(`<div><span>${key}: ${peopleJSON[i][key]}</span></div>`)
+				// 		}
+				// 	}
+				// }
+
+
+
+				for (var i = 0; i < peopleJSON.length; i++) {
+					$resultsID.append(`<div class="tab">
+										<h3>${peopleJSON[i].name}'s Info</h3>
+										<div class="person" id=${i}>`)
+
+
+					//Go through each key in JSON, add to the matching ID only, not the class
+					for (var key in peopleJSON[i]) {
+						if (key === 'hobbies') {
+							$(`#${i}`).append(`<span>${key}: </span>`)
+							$(`#${i}`).append(`<ul>`)
+
+							for (var hobbyKey in peopleJSON[i][key]) {
+								$(`#${i} ul`).first().append(`<li>${peopleJSON[i][key][hobbyKey]}</li>`)
+							}
+
+						}
+						else {
+							$(`#${i}`).append(`<div><span>${key}: ${peopleJSON[i][key]}</span></div>`)
+						}
+					}
+				}
+
+
+
+
+
+
+
+			}
+			// End of function *************************************************************************
+
+
+
+			// Function that is responsible for collapsing detail sections.  Clicking on h3 triggers collapse
+			//*******************************************************************************************************
+			function collapse() {
+
+				$(document).on('click', 'h3', function () {
+					$(this).parent().toggleClass("closed");
+				})
+			}
+			// End of function *************************************************************************
+
+		});
+
+
+	</script>
+</head>
+
+<body>
+	<div>
+		<h1>People</h1>
+		<div id="results"></div>
+	</div>
+</body>
+
+</html>
